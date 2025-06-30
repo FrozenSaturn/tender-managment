@@ -64,9 +64,12 @@ export default function MyTendersPage() {
                   </p>
                 </div>
                 {/* This link will eventually go to a page showing applications for this tender */}
-                <button className="text-blue-600 hover:underline">
+                <Link
+                  href={`/dashboard/tenders/${tender.id}`}
+                  className="text-blue-600 hover:underline"
+                >
                   View Applications
-                </button>
+                </Link>
               </li>
             ))}
           </ul>

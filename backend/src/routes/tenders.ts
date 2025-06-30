@@ -1,5 +1,5 @@
 // backend/src/routes/tenders.ts
-import express, { NextFunction, Response } from "express";
+import express, { NextFunction, Response, Request } from "express";
 import { z } from "zod";
 import { authMiddleware, AuthenticatedRequest } from "../middleware/auth";
 import knex from "../db/knex";
@@ -67,6 +67,32 @@ router.get(
     res.json(tenders);
   }
 );
+
+//## Get a single Tender: GET /api/tenders/:id
+router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const tenderId = Number(req.params.id);
+    if (Number.isNaN(tenderId)) {
+      res.status(404).json({ message: "Tender not found" });
+      return;
+    }
+
+    const tender = await knex("tenders")
+      .join("companies", "tenders.company_id", "companies.id")
+      .select("tenders.*", "companies.name as companyName")
+      .where("tenders.id", tenderId)
+      .first();
+
+    if (!tender) {
+      res.status(404).json({ message: "Tender not found" });
+      return;
+    }
+
+    res.json(tender);
+  } catch (err) {
+    next(err); // <-- forward any unexpected error
+  }
+});
 
 //## Update a Tender: PUT /api/tenders/:id
 router.put(
@@ -139,12 +165,10 @@ router.post(
         })
         .returning("*");
 
-      res
-        .status(201)
-        .json({
-          message: "Application submitted successfully.",
-          application: newApplication,
-        });
+      res.status(201).json({
+        message: "Application submitted successfully.",
+        application: newApplication,
+      });
     } catch (error: any) {
       // Handle unique constraint violation (applying twice)
       if (error.code === "23505") {
@@ -176,11 +200,9 @@ router.get(
 
     // Authorization check: ensure user owns the tender to see its applications
     if (tender.company_id !== companyId) {
-      res
-        .status(403)
-        .json({
-          message: "Forbidden: You cannot view applications for this tender.",
-        });
+      res.status(403).json({
+        message: "Forbidden: You cannot view applications for this tender.",
+      });
       return;
     }
 
