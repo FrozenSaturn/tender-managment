@@ -56,20 +56,25 @@ export default function SignUpPage() {
         fw={700}
         mb={10}
         mt={20}
-        c="accent.0"
       >
         Create Your Company Account
       </Title>
 
       <Text
-        c="dimmed"
+        c="accent.1"
         size="sm"
         ta="center"
         mt={5}
         className={classes.subtitle}
       >
         Already have an account?{" "}
-        <Anchor component={Link} href="/auth/login" size="sm">
+        <Anchor
+          component={Link}
+          href="/auth/login"
+          size="sm"
+          c="accent.4"
+          fw={500}
+        >
           Login here
         </Anchor>
       </Text>
@@ -78,11 +83,13 @@ export default function SignUpPage() {
         component="form"
         onSubmit={handleSubmit}
         withBorder
-        shadow="md"
+        shadow="xl"
         p={30}
         mt={30}
         radius="md"
         className={classes.form}
+        bg="primary.0"
+        style={{ borderColor: "var(--mantine-color-primary-0)" }}
       >
         {error && (
           <Text c="red" size="sm" ta="center" mb="sm" className={classes.error}>
@@ -97,6 +104,14 @@ export default function SignUpPage() {
           onChange={(e) => setCompanyName(e.target.value)}
           required
           radius="md"
+          styles={{
+            label: { color: "var(--mantine-color-accent-0)" },
+            input: {
+              "&:focus": {
+                borderColor: "var(--mantine-color-accent-5)",
+              },
+            },
+          }}
         />
 
         <TextInput
@@ -107,6 +122,14 @@ export default function SignUpPage() {
           required
           mt="md"
           radius="md"
+          styles={{
+            label: { color: "var(--mantine-color-accent-0)" },
+            input: {
+              "&:focus": {
+                borderColor: "var(--mantine-color-accent-5)",
+              },
+            },
+          }}
         />
 
         <PasswordInput
@@ -117,6 +140,14 @@ export default function SignUpPage() {
           required
           mt="md"
           radius="md"
+          styles={{
+            label: { color: "var(--mantine-color-accent-0)" },
+            input: {
+              "&:focus": {
+                borderColor: "var(--mantine-color-accent-5)",
+              },
+            },
+          }}
         />
 
         <Button
@@ -125,19 +156,32 @@ export default function SignUpPage() {
           mt="xl"
           radius="md"
           variant="gradient"
-          gradient={{ from: "accent.6", to: "primary.9" }}
+          gradient={{ from: "accent.5", to: "primary.7" }}
           className={classes.control}
+          size="md"
         >
           Sign Up
         </Button>
 
-        <Text c="dimmed" size="xs" ta="center" mt="sm">
+        <Text c="accent.1" size="xs" ta="center" mt="sm">
           By signing up, you agree to our{" "}
-          <Anchor component={Link} href="/terms" size="xs">
+          <Anchor
+            component={Link}
+            href="/terms"
+            size="xs"
+            c="accent.4"
+            fw={500}
+          >
             Terms of Service
           </Anchor>{" "}
           and{" "}
-          <Anchor component={Link} href="/privacy" size="xs">
+          <Anchor
+            component={Link}
+            href="/privacy"
+            size="xs"
+            c="accent.4"
+            fw={500}
+          >
             Privacy Policy
           </Anchor>
         </Text>

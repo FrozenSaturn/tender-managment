@@ -3,6 +3,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  Anchor,
+  Button,
+  Container,
+  Paper,
+  TextInput,
+  PasswordInput,
+  Title,
+  Text,
+} from "@mantine/core";
+import Link from "next/link";
+import classes from "./Login.module.css";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -19,67 +31,136 @@ export default function LoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
+        credentials: "include",
+        mode: "cors",
       });
 
       if (res.ok) {
         const { token } = await res.json();
-        localStorage.setItem("token", token); // Store the token
-        router.push("/dashboard"); // Redirect to the dashboard
+        localStorage.setItem("token", token);
+        router.push("/dashboard");
       } else {
         const data = await res.json();
         setError(data.message || "Invalid credentials.");
       }
-    } catch (err) {
-      setError("Failed to connect to the server.");
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("Unable to connect to the server. Please try again later.");
     }
   };
 
   return (
-    <div className="container mx-auto px-6 py-12 max-w-md">
-      <h1 className="text-3xl font-bold text-center mb-6">
-        Login to Your Account
-      </h1>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md"
+    <Container size={420} my={40}>
+      <Title
+        ta="center"
+        className={classes.title}
+        fz={40}
+        fw={700}
+        mb={10}
+        mt={20}
+        c="accent.0"
       >
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2" htmlFor="email">
-            Email Address
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md"
-            required
-          />
-        </div>
-        <div className="mb-6">
-          <label
-            className="block text-gray-700 font-bold mb-2"
-            htmlFor="password"
-          >
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md"
-            required
-          />
-        </div>
-        <button
+        Welcome Back
+      </Title>
+
+      <Text
+        c="accent.1"
+        size="sm"
+        ta="center"
+        mt={5}
+        className={classes.subtitle}
+      >
+        Don't have an account yet?{" "}
+        <Anchor
+          component={Link}
+          href="/auth/signup"
+          size="sm"
+          c="accent.4"
+          fw={500}
+        >
+          Sign up here
+        </Anchor>
+      </Text>
+
+      <Paper
+        component="form"
+        onSubmit={handleSubmit}
+        withBorder
+        shadow="xl"
+        p={30}
+        mt={30}
+        radius="md"
+        className={classes.form}
+        bg="primary.0"
+        style={{ borderColor: "var(--mantine-color-primary-0)" }}
+      >
+        {error && (
+          <Text c="red" size="sm" ta="center" mb="sm" className={classes.error}>
+            {error}
+          </Text>
+        )}
+
+        <TextInput
+          label="Email"
+          placeholder="you@company.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          radius="md"
+          styles={{
+            label: { color: "var(--mantine-color-accent-0)" },
+            input: {
+              "&:focus": {
+                borderColor: "var(--mantine-color-accent-5)",
+              },
+            },
+          }}
+        />
+
+        <PasswordInput
+          label="Password"
+          placeholder="Your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          mt="md"
+          radius="md"
+          styles={{
+            label: { color: "var(--mantine-color-accent-0)" },
+            input: {
+              "&:focus": {
+                borderColor: "var(--mantine-color-accent-5)",
+              },
+            },
+          }}
+        />
+
+        <Button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+          fullWidth
+          mt="xl"
+          radius="md"
+          variant="gradient"
+          gradient={{ from: "accent.5", to: "primary.7" }}
+          className={classes.control}
+          size="md"
         >
           Login
-        </button>
-      </form>
-    </div>
+        </Button>
+
+        <Anchor
+          component={Link}
+          href="/auth/forgot-password"
+          size="sm"
+          c="accent.4"
+          fw={500}
+          ta="center"
+          mt="sm"
+          style={{ display: "block" }}
+        >
+          Forgot your password?
+        </Anchor>
+      </Paper>
+    </Container>
   );
 }
