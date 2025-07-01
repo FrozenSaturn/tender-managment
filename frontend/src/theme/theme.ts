@@ -3,9 +3,9 @@ import { createTheme } from "@mantine/core";
 export const theme = createTheme({
   primaryColor: "blue",
   colors: {
-    // Dark theme optimized colors
+    // Modern dark theme colors
     dark: [
-      "#C1C2C5", // 0
+      "#C1C2C5", // 0 - lightest text
       "#A6A7AB", // 1
       "#909296", // 2
       "#5C5F66", // 3
@@ -14,38 +14,39 @@ export const theme = createTheme({
       "#25262B", // 6
       "#1A1B1E", // 7
       "#141517", // 8
-      "#101113", // 9
+      "#101113", // 9 - darkest black
     ],
-    // Our custom colors optimized for dark theme
+    // Deep blue-black gradient
     primary: [
-      "#1B262C", // 0 - darkest
-      "#1D2B32", // 1
-      "#1F3038", // 2
-      "#21363E", // 3
-      "#233B44", // 4
-      "#25414A", // 5 - our primary
-      "#274650", // 6
-      "#294C56", // 7
-      "#2B515C", // 8
-      "#0F4C75", // 9 - our secondary
+      "#1E1E1E", // 0 - darkest
+      "#1A1A2E", // 1
+      "#16213E", // 2
+      "#0F3460", // 3
+      "#0A2647", // 4
+      "#144272", // 5 - primary
+      "#205295", // 6
+      "#2C74B3", // 7
+      "#3B82F6", // 8
+      "#4B91F1", // 9 - lightest
     ],
+    // Electric blue accents
     accent: [
-      "#BBE1FA", // 0 - lightest
-      "#A8D4F4", // 1
-      "#95C7EE", // 2
-      "#82BAE8", // 3
-      "#6FADE2", // 4
-      "#5CA0DC", // 5
-      "#3282B8", // 6 - our accent
-      "#2975AB", // 7
-      "#16689E", // 8
-      "#035791", // 9 - darkest
+      "#E0F2FE", // 0 - lightest
+      "#BAE6FD", // 1
+      "#7DD3FC", // 2
+      "#38BDF8", // 3
+      "#0EA5E9", // 4
+      "#0284C7", // 5
+      "#0369A1", // 6 - main accent
+      "#075985", // 7
+      "#0C4A6E", // 8
+      "#082F49", // 9 - darkest
     ],
   },
   fontFamily: "Inter, sans-serif",
   defaultRadius: "md",
-  white: "#BBE1FA", // Our pale color as white
-  black: "#1B262C", // Our primary as black
+  white: "#E0F2FE", // Light blue as white
+  black: "#1A1A2E", // Deep blue-black
 
   // Dark theme specific components
   components: {
@@ -68,15 +69,15 @@ export const theme = createTheme({
       },
       styles: (theme: any) => ({
         root: {
-          backgroundColor: theme.colors.dark[7],
-          borderColor: theme.colors.dark[5],
+          backgroundColor: theme.colors.primary[1],
+          borderColor: theme.colors.primary[3],
         },
       }),
     },
     Paper: {
       styles: (theme: any) => ({
         root: {
-          backgroundColor: theme.colors.dark[7],
+          backgroundColor: theme.colors.primary[1],
         },
       }),
     },

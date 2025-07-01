@@ -1,8 +1,19 @@
-// frontend/src/app/signup/page.tsx
 "use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  Anchor,
+  Button,
+  Container,
+  Paper,
+  TextInput,
+  PasswordInput,
+  Title,
+  Text,
+} from "@mantine/core";
+import Link from "next/link";
+import classes from "./SignUp.module.css";
 
 export default function SignUpPage() {
   const [companyName, setCompanyName] = useState("");
@@ -37,67 +48,100 @@ export default function SignUpPage() {
   };
 
   return (
-    <div className="container mx-auto px-6 py-12 max-w-md">
-      <h1 className="text-3xl font-bold text-center mb-6">
-        Create Your Company Account
-      </h1>
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-lg shadow-md"
+    <Container size={420} my={40}>
+      <Title
+        ta="center"
+        className={classes.title}
+        fz={40}
+        fw={700}
+        mb={10}
+        mt={20}
+        c="accent.0"
       >
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        <div className="mb-4">
-          <label
-            className="block text-gray-700 font-bold mb-2"
-            htmlFor="companyName"
-          >
-            Company Name
-          </label>
-          <input
-            type="text"
-            id="companyName"
-            value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2" htmlFor="email">
-            Email Address
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md"
-            required
-          />
-        </div>
-        <div className="mb-6">
-          <label
-            className="block text-gray-700 font-bold mb-2"
-            htmlFor="password"
-          >
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-3 py-2 border rounded-md"
-            required
-          />
-        </div>
-        <button
+        Create Your Company Account
+      </Title>
+
+      <Text
+        c="dimmed"
+        size="sm"
+        ta="center"
+        mt={5}
+        className={classes.subtitle}
+      >
+        Already have an account?{" "}
+        <Anchor component={Link} href="/auth/login" size="sm">
+          Login here
+        </Anchor>
+      </Text>
+
+      <Paper
+        component="form"
+        onSubmit={handleSubmit}
+        withBorder
+        shadow="md"
+        p={30}
+        mt={30}
+        radius="md"
+        className={classes.form}
+      >
+        {error && (
+          <Text c="red" size="sm" ta="center" mb="sm" className={classes.error}>
+            {error}
+          </Text>
+        )}
+
+        <TextInput
+          label="Company Name"
+          placeholder="Your company name"
+          value={companyName}
+          onChange={(e) => setCompanyName(e.target.value)}
+          required
+          radius="md"
+        />
+
+        <TextInput
+          label="Email"
+          placeholder="you@company.com"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          mt="md"
+          radius="md"
+        />
+
+        <PasswordInput
+          label="Password"
+          placeholder="Your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+          mt="md"
+          radius="md"
+        />
+
+        <Button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700"
+          fullWidth
+          mt="xl"
+          radius="md"
+          variant="gradient"
+          gradient={{ from: "accent.6", to: "primary.9" }}
+          className={classes.control}
         >
           Sign Up
-        </button>
-      </form>
-    </div>
+        </Button>
+
+        <Text c="dimmed" size="xs" ta="center" mt="sm">
+          By signing up, you agree to our{" "}
+          <Anchor component={Link} href="/terms" size="xs">
+            Terms of Service
+          </Anchor>{" "}
+          and{" "}
+          <Anchor component={Link} href="/privacy" size="xs">
+            Privacy Policy
+          </Anchor>
+        </Text>
+      </Paper>
+    </Container>
   );
 }

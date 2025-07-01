@@ -1,31 +1,54 @@
-import Link from "next/link";
+"use client";
+import { Button, Container, Text, Title } from "@mantine/core";
+import { Dots } from "./Dots";
+import classes from "./Hero.module.css";
+import { useRouter } from "next/navigation";
 
-export const HeroSection = () => {
+export function HeroText() {
+  const router = useRouter();
   return (
-    <section className="bg-gray-900 text-white">
-      <div className="container mx-auto px-6 py-24 text-center">
-        <h1 className="text-4xl md:text-6xl font-bold mb-4">
-          The Future of B2B Tendering is Here
-        </h1>
-        <p className="text-lg md:text-xl text-gray-300 mb-8">
-          Discover, manage, and win tenders all in one place. Join our network
-          of leading companies.
-        </p>
-        <div className="space-x-4">
-          <Link
-            href="/tenders"
-            className="px-8 py-3 text-lg font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700"
+    <Container className={classes.wrapper} size={1400}>
+      <Dots className={classes.dots} style={{ left: 0, top: 0 }} />
+      <Dots className={classes.dots} style={{ left: 60, top: 0 }} />
+      <Dots className={classes.dots} style={{ left: 0, top: 140 }} />
+      <Dots className={classes.dots} style={{ right: 0, top: 60 }} />
+
+      <div className={classes.inner}>
+        <Title className={classes.title}>
+          Streamline{" "}
+          <Text component="span" className={classes.highlight} inherit>
+            Tender Management
+          </Text>{" "}
+          Process
+        </Title>
+
+        <Container p={0} size={600}>
+          <Text size="lg" c="dimmed" className={classes.description}>
+            Transform your procurement workflow with our comprehensive platform.
+            Create, manage, and track tenders efficiently while connecting with
+            qualified contractors all in one place.
+          </Text>
+        </Container>
+
+        <div className={classes.controls}>
+          <Button
+            className={classes.control}
+            size="lg"
+            variant="default"
+            color="gray"
+            onClick={() => router.push("/auth/signup")}
           >
-            Find Tenders
-          </Link>
-          <Link
-            href="/signup"
-            className="px-8 py-3 text-lg font-semibold text-gray-900 bg-white rounded-md hover:bg-gray-200"
+            Get Started
+          </Button>
+          <Button
+            className={classes.control}
+            size="lg"
+            onClick={() => router.push("/about")}
           >
-            Register Your Company
-          </Link>
+            Learn More
+          </Button>
         </div>
       </div>
-    </section>
+    </Container>
   );
-};
+}

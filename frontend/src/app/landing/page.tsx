@@ -1,11 +1,13 @@
-import { HeroSection } from "./components/Hero";
-import { FeaturesSection } from "./components/Features";
+import { HeroText } from "./components/Hero";
+import { Features } from "./components/Features";
+import { About } from "./components/About";
 
 export default function LandingPage() {
   return (
-    <>
-      <HeroSection />
-      <FeaturesSection />
-    </>
+    <main>
+      <HeroText />
+      <Features />
+      <About />
+    </main>
   );
 }

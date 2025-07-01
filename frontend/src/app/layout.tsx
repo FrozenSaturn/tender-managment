@@ -5,7 +5,7 @@ import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "@mantine/dates/styles.css";
 import "./globals.css";
-import { Header } from "@/components/Header"; // Import the Header
+import { Header } from "@/components/layout/Header"; // Import the Header
 import { MantineProvider } from "@/providers/mantine-provider";
 import { ColorSchemeScript } from "@mantine/core";
 
@@ -27,7 +27,10 @@ export default function RootLayout({
         <ColorSchemeScript defaultColorScheme="dark" />
       </head>
       <body style={{ backgroundColor: "#1A1B1E" }}>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider>
+          <Header />
+          {children}
+        </MantineProvider>
       </body>
     </html>
   );
