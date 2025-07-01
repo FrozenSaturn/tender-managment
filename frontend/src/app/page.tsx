@@ -1,7 +1,6 @@
 // frontend/src/app/page.tsx
-import Link from "next/link";
-import { redirect } from "next/navigation";
+import { Welcome } from "@/components/ui/welcome";
 
-export default function LandingPage() {
-  redirect("/landing");
+export default function HomePage() {
+  return <Welcome />;
 }

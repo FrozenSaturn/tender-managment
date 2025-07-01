@@ -1,8 +1,13 @@
 // frontend/src/app/layout.tsx
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import "@mantine/core/styles.css";
+import "@mantine/notifications/styles.css";
+import "@mantine/dates/styles.css";
 import "./globals.css";
 import { Header } from "@/components/Header"; // Import the Header
+import { MantineProvider } from "@/providers/mantine-provider";
+import { ColorSchemeScript } from "@mantine/core";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,22 +18,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.className} flex flex-col min-h-screen bg-gray-50`}
-        suppressHydrationWarning
-      >
-        <Header />
-        <main className="flex-grow">{children}</main>
-        <footer className="bg-gray-800 text-white py-6">
-          <div className="container mx-auto px-6 text-center">
-            <p>&copy; 2025 Kibou Systems. All Rights Reserved.</p>
-          </div>
-        </footer>
+    <html lang="en" data-mantine-color-scheme="dark">
+      <head>
+        <ColorSchemeScript defaultColorScheme="dark" />
+      </head>
+      <body style={{ backgroundColor: "#1A1B1E" }}>
+        <MantineProvider>{children}</MantineProvider>
       </body>
     </html>
   );
