@@ -36,7 +36,6 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
-    // Log the full URL for debugging
     const loginUrl = `${API_BASE_URL}/auth/signin`;
     console.log("Attempting to login at:", loginUrl);
 
@@ -45,8 +44,10 @@ export default function LoginPage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Accept: "application/json",
         },
         body: JSON.stringify({ email, password }),
+        credentials: "include",
         mode: "cors",
       });
 
