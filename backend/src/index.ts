@@ -14,51 +14,30 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-/* ---------- CORS: allow localhost + ANY *.vercel.app ---------- */
-app.use(
-  cors({
-    origin: (origin, cb) => {
-      // curl / Postman / server-to-server
-      if (!origin) return cb(null, true);
+// --- MIDDLEWARES ---
 
-      // local dev
-      if (origin.startsWith("http://localhost:3000")) return cb(null, true);
+// 1. Universal CORS Handler (place this first!)
+// This will accept requests from any origin.
+app.use(cors());
+app.options("*", cors()); // enable pre-flight across-the-board
 
-      // every Vercel preview & production domain
-      if (/\.vercel\.app$/.test(new URL(origin).hostname))
-        return cb(null, true);
-
-      // everything else → blocked
-      cb(new Error("Not allowed by CORS"));
-    },
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-    credentials: false, // you're using Bearer tokens, not cookies
-  })
-);
-/* -------------------------------------------------------------- */
-
-// OPTIONAL: respond to pre-flight quickly
-app.options("*", cors());
-
+// 2. Body Parser
 app.use(express.json());
 
-// Add a health check endpoint
+// --- HEALTH CHECKS & API ROUTES ---
 app.get("/", (req, res) => {
   res.json({ status: "ok", message: "API is running" });
 });
-
-// Add a health check endpoint for /api
 app.get("/api", (req, res) => {
   res.json({ status: "ok", message: "API is running" });
 });
 
-// API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/companies", companyRoutes);
 app.use("/api/tenders", tenderRoutes);
 app.use("/api/search", searchRoutes);
 
+// --- SERVER LISTENER ---
 app.listen(PORT, () => {
   console.log(`🚀 Server is running on http://localhost:${PORT}`);
 });
