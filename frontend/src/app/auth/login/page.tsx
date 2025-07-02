@@ -47,7 +47,6 @@ export default function LoginPage() {
           Accept: "application/json",
         },
         body: JSON.stringify({ email, password }),
-        credentials: "include",
         mode: "cors",
       });
 
@@ -58,7 +57,9 @@ export default function LoginPage() {
         localStorage.setItem("token", data.token);
         router.push("/dashboard");
       } else {
-        const errorData = await res.json();
+        const errorData = await res
+          .json()
+          .catch(() => ({ message: "Invalid credentials" }));
         setError(errorData.message || "Invalid credentials.");
       }
     } catch (error) {
