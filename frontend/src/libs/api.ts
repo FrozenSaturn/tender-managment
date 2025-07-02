@@ -1,5 +1,6 @@
 // frontend/src/lib/api.ts
-const BASE_URL = "http://localhost:3001/api";
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
 // A helper to handle API requests
 const apiRequest = async (path: string, options: RequestInit = {}) => {
@@ -14,7 +15,7 @@ const apiRequest = async (path: string, options: RequestInit = {}) => {
   }
 
   try {
-    const res = await fetch(`${BASE_URL}${path}`, {
+    const res = await fetch(`${API_BASE_URL}${path}`, {
       ...options,
       headers,
     });

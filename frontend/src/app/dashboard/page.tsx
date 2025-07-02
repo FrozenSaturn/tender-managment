@@ -1,10 +1,29 @@
-// frontend/src/app/dashboard/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { getMyCompanyProfile } from "@/libs/api"; // Use our new API client
+import {
+  AppShell,
+  Text,
+  UnstyledButton,
+  Group,
+  rem,
+  Title,
+  Card,
+  Badge,
+  Button,
+  Stack,
+} from "@mantine/core";
+import {
+  IconUser,
+  IconFileDescription,
+  IconPlus,
+  IconSearch,
+  IconLogout,
+} from "@tabler/icons-react";
+import { getMyCompanyProfile, getAllTenders } from "@/libs/api";
+import classes from "./NavbarSimple.module.css";
 
 type CompanyProfile = {
   id: number;
@@ -13,25 +32,81 @@ type CompanyProfile = {
   description: string;
 };
 
+type Tender = {
+  id: number;
+  title: string;
+  description: string;
+  deadline: string;
+  budget?: number;
+  companyName: string;
+};
+
+interface NavbarLinkProps {
+  icon: typeof IconUser;
+  label: string;
+  active?: boolean;
+  href: string;
+}
+
+function NavbarLink({ icon: Icon, label, active, href }: NavbarLinkProps) {
+  return (
+    <Link href={href} className={classes.linkWrapper}>
+      <UnstyledButton
+        className={`${classes.link} ${active ? classes.active : ""}`}
+      >
+        <Group>
+          <Icon size={20} stroke={1.5} />
+          <Text size="sm" fw={500}>
+            {label}
+          </Text>
+        </Group>
+      </UnstyledButton>
+    </Link>
+  );
+}
+
+const navLinks = [
+  { icon: IconUser, label: "Manage Profile", href: "/dashboard/profile" },
+  {
+    icon: IconFileDescription,
+    label: "My Tenders",
+    href: "/dashboard/tenders",
+  },
+  {
+    icon: IconPlus,
+    label: "Create New Tender",
+    href: "/dashboard/tenders/new",
+  },
+  {
+    icon: IconSearch,
+    label: "Browse All Tenders",
+    href: "/tenders",
+  },
+];
+
 export default function DashboardPage() {
   const [profile, setProfile] = useState<CompanyProfile | null>(null);
+  const [tenders, setTenders] = useState<Tender[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
-    // This is a simple way to protect a route on the client-side
     const token = localStorage.getItem("token");
     if (!token) {
       router.push("/auth/login");
       return;
     }
 
-    const fetchProfile = async () => {
+    const fetchData = async () => {
       try {
-        const data = await getMyCompanyProfile();
-        setProfile(data);
+        const [profileData, tendersData] = await Promise.all([
+          getMyCompanyProfile(),
+          getAllTenders(),
+        ]);
+        setProfile(profileData);
+        setTenders(tendersData.data);
       } catch (error) {
-        // Handle token expiration or other errors
         console.error(error);
         localStorage.removeItem("token");
         router.push("/auth/login");
@@ -40,7 +115,7 @@ export default function DashboardPage() {
       }
     };
 
-    fetchProfile();
+    fetchData();
   }, [router]);
 
   if (loading) {
@@ -48,31 +123,111 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="container mx-auto px-6 py-12">
-      <h1 className="text-3xl font-bold mb-4">Welcome, {profile?.name}!</h1>
-      <div className="bg-white p-8 rounded-lg shadow-md">
-        <h2 className="text-2xl font-semibold mb-6">Your Dashboard</h2>
-        <div className="space-y-4">
-          <Link
-            href="/dashboard/profile"
-            className="block w-full text-left p-4 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+    <AppShell
+      padding="md"
+      navbar={{
+        width: { base: 300 },
+        breakpoint: "sm",
+        collapsed: { mobile: false },
+      }}
+    >
+      <AppShell.Navbar p="xs">
+        <AppShell.Section mt="xs">
+          <Title order={4} p="md" c="accent.5">
+            Welcome, {profile?.name}!
+          </Title>
+        </AppShell.Section>
+        <AppShell.Section grow mt="md">
+          {navLinks.map((link) => (
+            <NavbarLink
+              key={link.label}
+              {...link}
+              active={pathname === link.href}
+            />
+          ))}
+        </AppShell.Section>
+        <AppShell.Section>
+          <UnstyledButton
+            className={classes.link}
+            onClick={() => {
+              localStorage.removeItem("token");
+              router.push("/auth/login");
+            }}
           >
-            Manage Profile
-          </Link>
-          <Link
-            href="/dashboard/tenders"
-            className="block w-full text-left p-4 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
-          >
-            View My Tenders
-          </Link>
-          <Link
-            href="/dashboard/tenders/new"
-            className="block w-full text-left p-4 bg-blue-100 hover:bg-blue-200 rounded-md text-blue-800 font-bold transition-colors"
-          >
-            Create New Tender
-          </Link>
+            <Group>
+              <IconLogout size={20} stroke={1.5} />
+              <Text size="sm" fw={500}>
+                Logout
+              </Text>
+            </Group>
+          </UnstyledButton>
+        </AppShell.Section>
+      </AppShell.Navbar>
+      <AppShell.Main>
+        <div style={{ padding: rem(20) }}>
+          <Stack>
+            <Title order={2}>Available Tenders</Title>
+            <Text c="dimmed" size="sm">
+              Browse and apply for tenders from other companies
+            </Text>
+
+            <div
+              style={{
+                display: "grid",
+                gap: rem(16),
+                gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+              }}
+            >
+              {tenders
+                .filter((tender) => tender.companyName !== profile?.name) // Don't show own tenders
+                .map((tender) => (
+                  <Card
+                    key={tender.id}
+                    shadow="sm"
+                    padding="lg"
+                    radius="md"
+                    withBorder
+                  >
+                    <Stack gap="sm">
+                      <Title order={3} lineClamp={2}>
+                        {tender.title}
+                      </Title>
+
+                      <Text size="sm" c="dimmed" lineClamp={3}>
+                        {tender.description}
+                      </Text>
+
+                      <Group justify="space-between">
+                        <Text size="sm" c="dimmed">
+                          By: {tender.companyName}
+                        </Text>
+                        {tender.budget && (
+                          <Badge color="green" variant="light">
+                            ${tender.budget.toLocaleString()}
+                          </Badge>
+                        )}
+                      </Group>
+
+                      <Text size="sm" c="dimmed">
+                        Deadline:{" "}
+                        {new Date(tender.deadline).toLocaleDateString()}
+                      </Text>
+
+                      <Button
+                        component={Link}
+                        href={`/tenders/${tender.id}`}
+                        variant="light"
+                        fullWidth
+                      >
+                        View Details & Apply
+                      </Button>
+                    </Stack>
+                  </Card>
+                ))}
+            </div>
+          </Stack>
         </div>
-      </div>
-    </div>
+      </AppShell.Main>
+    </AppShell>
   );
 }

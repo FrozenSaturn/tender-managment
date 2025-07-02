@@ -8,6 +8,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header"; // Import the Header
 import { MantineProvider } from "@/providers/mantine-provider";
 import { ColorSchemeScript } from "@mantine/core";
+import Image from "next/image";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,6 +31,22 @@ export default function RootLayout({
         <MantineProvider>
           <Header />
           {children}
+          <div
+            style={{
+              position: "fixed",
+              bottom: "20px",
+              left: "20px",
+              zIndex: 50,
+            }}
+          >
+            <Image
+              src="/next.svg"
+              alt="Next.js Logo"
+              width={80}
+              height={40}
+              style={{ opacity: 0.4 }}
+            />
+          </div>
         </MantineProvider>
       </body>
     </html>

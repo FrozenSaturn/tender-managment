@@ -21,11 +21,6 @@ const nextConfig = {
     }
     return config;
   },
-  // Disable server-side features in client components
-  experimental: {
-    serverActions: false,
-    serverComponents: false,
-  },
 };
 
 module.exports = nextConfig;
