@@ -1,1 +1,75 @@
-So, how does this thing work?Hey there! This doc gives you a quick, behind-the-scenes look at how we built the B2B Tender Management Platform. Let's dive in!1. The API (The Brains of the Operation)Our backend is an Express.js app that handles all the heavy lifting. We set it up as a RESTful API, which is just a fancy way of saying it's organized neatly. We split everything into different routes to keep things from getting messy./api/auth: This is your front door! It handles everything to do with getting you signed up and logged in./api/companies: Once you're in, this is where you can mess with your company's profile. You can check out your info, update it, and even upload a sweet new logo./api/tenders: This is the heart of the platform. It's where you can create new tenders, see all the public ones, or just look at the list of tenders you've posted yourself./api/search: Pretty straightforward! This is a public search bar for finding other cool companies on the platform.We also use a tool called Zod to double-check any info you send us. It just makes sure everything is in the right format before we do anything with it!2. How We Keep Your Account Safe (The Login Flow)Getting you logged in securely is super important, and here's the play-by-play on how we handle it:You Sign Up or Log In: First things first, you either create a new account or log in with your email and password.The Server Gives You a "Key": If your details are correct, our server sends back a special, temporary key called a JWT (JSON Web Token). Think of it like a digital ticket that proves you are who you say you are. It's got your user and company ID tucked inside and is set to expire after a day.Your Browser Holds the Key: Our frontend app grabs this key and saves it in your browser's localStorage.Showing Your Key for Protected Stuff: Now, whenever you try to do something that requires you to be logged in (like creating a tender), your browser automatically shows the server your special key.The Server Checks Your Key: Our backend has a bouncer (we call it authMiddleware) that checks this key on every request. It makes sure the key is legit and hasn't expired. If everything looks good, it lets you in!3. Handling Company LogosWhat about company logos? We didn't want to clog up our main database with big image files, so we came up with a neat solution using Supabase Storage.You Pick a File: On your profile page, you choose a new logo to upload.The Backend Catches It: Your browser sends the image file over to our backend. We use a helper called multer to catch the file and hold onto it for a second.Off to Supabase!: We then immediately send the image file over to a special storage bucket we set up in Supabase. It's built to handle files way better than our database can.Supabase Gives Us a Link: Once the image is safely stored, Supabase gives us a public link to it.We Save the Link: Finally, we take that new link and save it to your company's profile in our main database. That way, we can easily find and display your logo without ever having to store the actual image ourselves. Pretty cool, right?!
+# B2B Tender Management Platform - How It All Works
+
+Hey there! Welcome to the behind-the-scenes tour of our B2B Tender Management Platform. We're excited to show you how we built this thing from the ground up. Grab a coffee and let's walk through it together!
+
+## The API - Our Backend Powerhouse
+
+At the heart of everything is our Express.js API. Think of it as the brain that makes all the magic happen. We've organized it as a RESTful API, which basically means we keep things neat and tidy with clear, logical endpoints.
+
+Here's how we've structured the main routes:
+
+### `/api/auth` - Your Gateway
+This is where the authentication magic happens. Whether you're signing up for the first time or logging back in, this endpoint has got you covered. It's like the bouncer at the club, but way friendlier.
+
+### `/api/companies` - Your Business Profile Hub
+Once you're logged in, this is your company's home base. You can check out your current info, make updates, and yes - upload that shiny new company logo you've been wanting to show off.
+
+### `/api/tenders` - The Main Event
+This is where the real action happens. Create new tenders, browse through all the public opportunities, or just check out what you've posted. It's basically the marketplace where all the business deals come to life.
+
+### `/api/search` - Find What You Need
+Simple but powerful. This public search lets anyone discover companies on the platform. Perfect for when you're looking for potential partners or just curious about who's in your industry.
+
+We also use something called Zod for validation. It's like having a really thorough proofreader that checks all incoming data to make sure everything's formatted correctly before we process it. No more "garbage in, garbage out" situations!
+
+## Keeping You Secure - The Authentication Flow
+
+Security isn't just important to us - it's everything. Here's exactly how we keep your account safe without making things complicated:
+
+### Step 1: You Log In
+Pretty straightforward - you enter your email and password, either to sign up or log back in.
+
+### Step 2: We Give You a Digital Pass
+If everything checks out, our server creates a special token called a JWT (JSON Web Token). Think of it like a temporary VIP pass that proves you're you. This token contains your user ID and company ID, and it expires after 24 hours for security.
+
+### Step 3: Your Browser Remembers
+Your browser saves this token in localStorage - basically a secure little pocket where it keeps important stuff for later.
+
+### Step 4: Automatic Authentication
+From now on, whenever you try to do something that requires being logged in (like creating a tender), your browser automatically shows this token to our server. No need to log in again and again.
+
+### Step 5: We Double-Check Everything
+Our backend has a security guard (we call it `authMiddleware`) that checks every token on every request. It makes sure the token is legitimate and hasn't expired. Only then do we let you proceed.
+
+This whole process happens in milliseconds, so you probably don't even notice it's working!
+
+## The Logo Upload Story
+
+Here's where things get interesting. We had a challenge: how do you handle company logos without slowing down your database?
+
+Our solution? We partnered with Supabase Storage, and here's how the whole process works:
+
+### The Upload Journey
+1. **You Choose Your Logo**: On your company profile page, you select that perfect logo file
+2. **We Catch It**: Your browser sends the image to our backend, where we use a tool called Multer to temporarily hold onto it
+3. **Off to Supabase**: We immediately ship that image off to our Supabase storage bucket - a service that's specifically designed to handle files efficiently
+4. **We Get a Public URL**: Supabase stores your image safely and gives us back a public URL where anyone can view it
+5. **We Update Your Profile**: Finally, we save that URL to your company profile in our main database
+
+The beauty of this approach? Your logo loads fast, our database stays lean, and we don't have to worry about storage limits. Everyone wins!
+
+## Why This Architecture Works
+
+We chose this setup because it's both robust and scalable. The Express.js backend gives us flexibility, JWT authentication keeps things secure without being cumbersome, and the Supabase integration means we can handle file uploads like a pro.
+
+Plus, everything is organized in a way that makes sense. When you're looking for authentication stuff, you know exactly where to find it. Need to work on company features? There's a dedicated space for that too.
+
+## What's Next?
+
+This platform is constantly evolving based on user feedback and new requirements. We're always looking for ways to make the experience smoother, faster, and more intuitive.
+
+Got questions about how something works? Found a bug? Have an idea for improvement? We'd love to hear from you!
+
+---
+
+*Built with ❤️ using Express.js, Supabase, and a whole lot of coffee*
