@@ -14,22 +14,25 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Update CORS configuration with your actual Vercel domain
-const allowedOrigins = [
-  "http://localhost:3000",
-  "https://tender-managment.vercel.app",
-  "https://tender-managment-cvpaic7cm-aryaa111000-gmailcoms-projects.vercel.app", // Your Vercel domain
-];
-
+// 👇 universal CORS – allow localhost and ANY *.vercel.app preview
 app.use(
   cors({
-    origin: allowedOrigins,
-    credentials: true,
+    origin: (origin, cb) => {
+      if (!origin) return cb(null, true); // Postman / curl
+      if (origin.startsWith("http://localhost:3000")) return cb(null, true);
+      if (/\.vercel\.app$/.test(new URL(origin).hostname))
+        return cb(null, true);
+      cb(new Error("Not allowed by CORS"));
+    },
+    credentials: false, // token auth → no cookies
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
-    optionsSuccessStatus: 200,
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// OPTIONAL: respond to pre-flight quickly
+app.options("*", cors());
+
 app.use(express.json());
 
 // Add a health check endpoint
