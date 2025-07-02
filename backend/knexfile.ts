@@ -21,7 +21,9 @@ const config: { [key: string]: Knex.Config } = {
     client: "postgresql",
     connection: {
       connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
+      ssl: {
+        rejectUnauthorized: false,
+      },
     },
     migrations: {
       directory: "./src/db/migrations",
