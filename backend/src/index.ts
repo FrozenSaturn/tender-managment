@@ -14,21 +14,29 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// 👇 universal CORS – allow localhost and ANY *.vercel.app preview
+/* ---------- CORS: allow localhost + ANY *.vercel.app ---------- */
 app.use(
   cors({
     origin: (origin, cb) => {
-      if (!origin) return cb(null, true); // Postman / curl
+      // curl / Postman / server-to-server
+      if (!origin) return cb(null, true);
+
+      // local dev
       if (origin.startsWith("http://localhost:3000")) return cb(null, true);
+
+      // every Vercel preview & production domain
       if (/\.vercel\.app$/.test(new URL(origin).hostname))
         return cb(null, true);
+
+      // everything else → blocked
       cb(new Error("Not allowed by CORS"));
     },
-    credentials: false, // token auth → no cookies
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: false, // you're using Bearer tokens, not cookies
   })
 );
+/* -------------------------------------------------------------- */
 
 // OPTIONAL: respond to pre-flight quickly
 app.options("*", cors());
