@@ -15,6 +15,9 @@ import {
 import Link from "next/link";
 import classes from "./SignUp.module.css";
 
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+
 export default function SignUpPage() {
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
@@ -26,19 +29,26 @@ export default function SignUpPage() {
     e.preventDefault();
     setError("");
 
+    const signupUrl = `${API_BASE_URL}/auth/signup`;
+    console.log("Attempting signup at:", signupUrl);
+
     try {
-      const res = await fetch("http://localhost:3001/api/auth/signup", {
+      const res = await fetch(signupUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify({ companyName, email, password }),
-        credentials: "include",
         mode: "cors",
       });
 
       if (res.ok) {
         router.push("/auth/login");
       } else {
-        const data = await res.json();
+        const data = await res
+          .json()
+          .catch(() => ({ message: "Signup failed" }));
         setError(data.message || "An error occurred during sign-up.");
       }
     } catch (error) {
