@@ -1,6 +1,11 @@
 // frontend/src/lib/api.ts
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+const API_BASE_URL = (() => {
+  // Make sure we have a valid API URL
+  const url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
+
+  // Remove trailing slash if present
+  return url.endsWith("/") ? url.slice(0, -1) : url;
+})();
 
 // A helper to handle API requests
 const apiRequest = async (path: string, options: RequestInit = {}) => {
