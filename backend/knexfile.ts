@@ -25,12 +25,12 @@ const config: { [key: string]: Knex.Config } = {
         rejectUnauthorized: false,
       },
     },
-    migrations: {
-      directory: "./src/db/migrations",
-    },
     pool: {
       min: 2,
       max: 10,
+    },
+    migrations: {
+      directory: "./src/db/migrations",
     },
   },
 };
