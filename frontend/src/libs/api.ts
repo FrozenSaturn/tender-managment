@@ -1,4 +1,6 @@
 // frontend/src/lib/api.ts
+import { supabase } from "./supabase";
+
 const API_BASE_URL = (() => {
   // Make sure we have a valid API URL
   const url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
@@ -80,3 +82,41 @@ export const applyToTender = (tenderId: number, data: { proposal: string }) =>
 
 export const getTenderApplications = (tenderId: number) =>
   apiRequest(`/tenders/${tenderId}/applications`);
+
+export const updateCompanyProfile = async (profileData: {
+  id: number;
+  name: string;
+  industry: string;
+  description: string;
+  logo?: File | null;
+}) => {
+  let logoUrl = undefined;
+
+  if (profileData.logo) {
+    const filePath = `${profileData.id}/logo`;
+    const { data, error } = await supabase.storage
+      .from("company-assets")
+      .upload(filePath, profileData.logo, { upsert: true });
+
+    if (error) {
+      console.error("Error uploading file:", error);
+      throw new Error("Failed to upload logo");
+    }
+
+    const { data: publicData } = supabase.storage
+      .from("company-assets")
+      .getPublicUrl(filePath);
+
+    logoUrl = publicData.publicUrl;
+  }
+
+  return apiRequest("/companies/me", {
+    method: "PUT",
+    body: JSON.stringify({
+      name: profileData.name,
+      industry: profileData.industry,
+      description: profileData.description,
+      logo: logoUrl,
+    }),
+  });
+};

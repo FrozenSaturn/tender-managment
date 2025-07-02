@@ -1,0 +1,9 @@
+.proposal {
+  white-space: pre-wrap;
+  line-height: 1.6;
+  color: var(--mantine-color-gray-7);
+  font-size: var(--mantine-font-size-sm);
+  padding: var(--mantine-spacing-xs);
+  background-color: var(--mantine-color-gray-0);
+  border-radius: var(--mantine-radius-sm);
+}

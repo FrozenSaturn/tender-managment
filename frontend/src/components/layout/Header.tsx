@@ -9,6 +9,7 @@ import {
   Menu,
   Text,
   UnstyledButton,
+  Button,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import classes from "./Header.module.css";
@@ -16,60 +17,18 @@ import Link from "next/link";
 
 const links = [
   { link: "/features", label: "Features" },
-  {
-    link: "#1",
-    label: "Learn",
-    links: [
-      { link: "/docs", label: "Documentation" },
-      { link: "/resources", label: "Resources" },
-    ],
-  },
   { link: "/about", label: "About" },
   { link: "/pricing", label: "Pricing" },
-  
 ];
 
 export function Header() {
   const [opened, { toggle }] = useDisclosure(false);
 
-  const items = links.map((link) => {
-    const menuItems = link.links?.map((item) => (
-      <Menu.Item key={item.link} component={Link} href={item.link}>
-        {item.label}
-      </Menu.Item>
-    ));
-
-    if (menuItems) {
-      return (
-        <Menu
-          key={link.label}
-          trigger="hover"
-          transitionProps={{ exitDuration: 0 }}
-          withinPortal
-        >
-          <Menu.Target>
-            <UnstyledButton className={classes.link}>
-              <Center>
-                <span>{link.label}</span>
-                <IconChevronDown
-                  size={12}
-                  stroke={1.5}
-                  className={classes.chevron}
-                />
-              </Center>
-            </UnstyledButton>
-          </Menu.Target>
-          <Menu.Dropdown>{menuItems}</Menu.Dropdown>
-        </Menu>
-      );
-    }
-
-    return (
-      <Link key={link.label} href={link.link} className={classes.link}>
-        {link.label}
-      </Link>
-    );
-  });
+  const items = links.map((link) => (
+    <Link key={link.label} href={link.link} className={classes.link}>
+      {link.label}
+    </Link>
+  ));
 
   return (
     <header className={classes.header}>
@@ -86,9 +45,21 @@ export function Header() {
           >
             TenderFlow
           </Text>
-          <Group gap={32} visibleFrom="sm" className={classes.links}>
-            {items}
+
+          <Group gap={32} visibleFrom="sm">
+            <Group gap={32} className={classes.links}>
+              {items}
+            </Group>
+            <Group>
+              <Button component={Link} href="/auth/login" variant="subtle">
+                Log in
+              </Button>
+              <Button component={Link} href="/auth/signup">
+                Sign up
+              </Button>
+            </Group>
           </Group>
+
           <Burger
             opened={opened}
             onClick={toggle}
