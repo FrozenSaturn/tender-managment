@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 3001;
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "tender-managment-production.up.railway.app", // Add your Vercel domain
+  "https://tender-managment-production.up.railway.app/", // Add your Vercel domain
 ];
 
 // Middlewares
