@@ -19,6 +19,11 @@ import classes from "./Login.module.css";
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api";
 
+console.log("Environment check:", {
+  NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+  isDevelopment: process.env.NODE_ENV === "development",
+});
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,22 +36,29 @@ export default function LoginPage() {
     e.preventDefault();
     setError("");
 
+    // Log the full URL for debugging
+    const loginUrl = `${API_BASE_URL}/auth/signin`;
+    console.log("Attempting to login at:", loginUrl);
+
     try {
-      const res = await fetch(`${API_BASE_URL}/auth/signin`, {
+      const res = await fetch(loginUrl, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ email, password }),
-        credentials: "include",
         mode: "cors",
       });
 
+      console.log("Response status:", res.status);
+
       if (res.ok) {
-        const { token } = await res.json();
-        localStorage.setItem("token", token);
+        const data = await res.json();
+        localStorage.setItem("token", data.token);
         router.push("/dashboard");
       } else {
-        const data = await res.json();
-        setError(data.message || "Invalid credentials.");
+        const errorData = await res.json();
+        setError(errorData.message || "Invalid credentials.");
       }
     } catch (error) {
       console.error("Login error:", error);
