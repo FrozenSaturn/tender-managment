@@ -16,10 +16,8 @@ const PORT = process.env.PORT || 3001;
 
 // --- MIDDLEWARES ---
 
-// 1. Universal CORS Handler (place this first!)
-// This will accept requests from any origin.
+// 1. Universal CORS Handler (runs for every request, including OPTIONS)
 app.use(cors());
-app.options("*", cors()); // enable pre-flight across-the-board
 
 // 2. Body Parser
 app.use(express.json());
