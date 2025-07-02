@@ -1,16 +1,35 @@
 import { Knex } from "knex";
+import dotenv from "dotenv";
 
-const config: Knex.Config = {
-  client: "postgresql",
-  connection: {
-    host: "localhost",
-    database: "tender_management",
-    user: process.env.USER,
-    password: "",
-    port: 5432,
+dotenv.config();
+
+const config: { [key: string]: Knex.Config } = {
+  development: {
+    client: "postgresql",
+    connection: {
+      host: "localhost",
+      database: "tender_management",
+      user: process.env.USER,
+      password: "",
+      port: 5432,
+    },
+    migrations: {
+      directory: "./src/db/migrations",
+    },
   },
-  migrations: {
-    directory: "./src/db/migrations",
+  production: {
+    client: "postgresql",
+    connection: {
+      connectionString: process.env.DATABASE_URL,
+      ssl: { rejectUnauthorized: false },
+    },
+    migrations: {
+      directory: "./src/db/migrations",
+    },
+    pool: {
+      min: 2,
+      max: 10,
+    },
   },
 };
 
