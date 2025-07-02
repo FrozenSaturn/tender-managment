@@ -36,6 +36,16 @@ app.use(
 );
 app.use(express.json());
 
+// Add a health check endpoint
+app.get("/", (req, res) => {
+  res.json({ status: "ok", message: "API is running" });
+});
+
+// Add a health check endpoint for /api
+app.get("/api", (req, res) => {
+  res.json({ status: "ok", message: "API is running" });
+});
+
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/companies", companyRoutes);
