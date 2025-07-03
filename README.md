@@ -6,8 +6,8 @@ A full-stack B2B platform where companies can register, manage their profile, pu
 
 ## Live Demo
 
--   **Frontend:** `[Add your Vercel deployment link here]`
--   **Backend:** `[Add your Heroku/Render deployment link here]`
+-   **Frontend:** `https://tender-managment.vercel.app/landing`
+-   **Backend:** `tender-managment-production.up.railway.app`
 
 ---
 
